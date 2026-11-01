@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2B4BD6">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Resume Banao</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Mukta:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a form column beside a live A4 sheet. On phones one pane at a time, switched by tabs. */
+:root{
+  --bg:#F2F3F8; --surface:#FFFFFF; --ink:#181C2E; --muted:#5B6180; --line:#D5D9E8;
+  --accent:#2B4BD6; --accent-ink:#FFFFFF; --soft:#E6EAF8; --danger:#B42318;
+  --paper:#FFFFFF; --paper-ink:#1D2130;
+  --ui:'Mukta','Noto Sans Devanagari',system-ui,sans-serif;
+  --doc:'Hind','Noto Sans Devanagari',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11131B; --surface:#1A1E2B; --ink:#E9ECF7; --muted:#9AA1BD; --line:#2D3246;
+    --accent:#8CA3FF; --accent-ink:#10142A; --soft:#232944; --danger:#FF8A7A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11131B; --surface:#1A1E2B; --ink:#E9ECF7; --muted:#9AA1BD; --line:#2D3246;
+  --accent:#8CA3FF; --accent-ink:#10142A; --soft:#232944; --danger:#FF8A7A; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--ui); font-size:16px; line-height:1.5;
+  padding-block:20px 40px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+button,input,textarea{font:inherit;color:inherit}
+.app{max-width:1200px;margin:0 auto}
+
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{margin:0;font-size:28px;line-height:1.15;font-weight:800;letter-spacing:-.01em}
+.tag{margin:2px 0 0;color:var(--muted);font-size:15px}
+
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);flex:none}
+.seg button{border:0;background:transparent;padding:7px 12px;font-weight:600;font-size:14px;cursor:pointer;color:var(--muted);min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;font-weight:700;cursor:pointer;min-height:44px}
+.tabs button[aria-selected="true"]{border-color:var(--accent);background:var(--soft);color:var(--accent)}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
+.app[data-view="form"] .pane-prev{display:none}
+.app[data-view="preview"] .pane-form{display:none}
+
+.exnote{display:flex;gap:12px;align-items:center;justify-content:space-between;background:var(--soft);border-radius:10px;padding:10px 12px;margin-bottom:16px;font-size:14px}
+.exnote p{margin:0}
+.exnote[hidden]{display:none}
+
+fieldset{border:0;margin:0 0 24px;padding:0;min-width:0}
+legend{padding:0;margin:0 0 10px;font-size:19px;font-weight:700;width:100%}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f>span,.f>label>span{font-size:13px;font-weight:600;color:var(--muted)}
+input[type=text],input[type=tel],input[type=email],textarea{
+  width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;min-height:44px;font-size:16px;
+}
+textarea{resize:vertical;line-height:1.5}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.item{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;margin-bottom:12px;display:grid;gap:12px}
+.item-h{display:flex;justify-content:flex-end}
+
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.wide{width:100%}
+.btn[disabled]{opacity:.6;cursor:progress}
+.btn-link{border:0;background:transparent;color:var(--accent);font-weight:700;cursor:pointer;padding:6px 4px;min-height:36px}
+.btn-link.danger{color:var(--danger)}
+
+.ai-row{display:none;align-items:center;gap:8px;flex-wrap:wrap}
+.has-ai .ai-row{display:flex}
+.btn-ai{border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:8px;padding:6px 12px;font-weight:700;font-size:14px;cursor:pointer;min-height:36px;display:inline-flex;gap:6px;align-items:center}
+.btn-ai[disabled]{opacity:.6;cursor:progress}
+.ai-msg{font-size:13px;color:var(--muted)}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin-bottom:12px}
+.tool-l{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)}
+.swatches{display:flex;gap:8px}
+.sw{width:32px;height:32px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+
+.stage{background:var(--soft);border-radius:12px;padding:10px}
+.wrap{position:relative;overflow:hidden}
+.sheet{width:794px;min-height:1123px;background:var(--paper);color:var(--paper-ink);font-family:var(--doc);font-size:13px;line-height:1.55;padding:52px 56px;transform-origin:top left;box-shadow:0 1px 6px rgba(0,0,0,.18)}
+.sheet .s-name{margin:0;font-size:33px;line-height:1.15;font-weight:700;color:var(--sa)}
+.sheet .s-title{margin:2px 0 0;font-size:16px;font-weight:500}
+.sheet .s-contact{margin:6px 0 0;font-size:12.5px;opacity:.8}
+.sheet .s-sec{margin-top:20px}
+.sheet h3{margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sa);border-bottom:1.5px solid var(--sa);padding-bottom:3px}
+.sheet p{margin:0}
+.sheet .s-item{margin-bottom:12px}
+.sheet .s-row{display:flex;justify-content:space-between;gap:16px;align-items:baseline}
+.sheet .s-row strong{font-weight:700}
+.sheet .s-date{font-size:12px;opacity:.75;white-space:nowrap}
+.sheet .s-org{font-weight:500;opacity:.85}
+.sheet ul{margin:4px 0 0;padding-left:18px}
+.sheet li{margin:1px 0}
+
+.meta{margin:10px 0 0;font-size:13px;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.pmsg{margin:10px 0 0;font-size:14px;min-height:20px}
+.copybox{width:100%;margin-top:10px;min-height:140px;font-size:14px}
+.copybox[hidden]{display:none}
+.back{margin-bottom:12px}
+
+@media (min-width:900px){
+  .tabs,.see,.back{display:none}
+  .cols{grid-template-columns:minmax(0,480px) minmax(0,1fr);gap:32px;align-items:start}
+  .app[data-view="form"] .pane-prev,.app[data-view="preview"] .pane-form{display:block}
+  .pane-prev{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+  .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid2 .wide2{grid-column:1/-1}
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn,.btn-ai,.seg button,.tabs button{transition:background-color .15s,border-color .15s}
+}
+</style>
+
+<div class="app" id="app" data-view="form">
+  <header class="top">
+    <div>
+      <h1 class="brand" data-t="brand"></h1>
+      <p class="tag" data-t="tag"></p>
+    </div>
+    <div class="seg" role="group" aria-label="Language">
+      <button type="button" data-ui="hi" aria-pressed="true">हिं</button>
+      <button type="button" data-ui="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" data-view="form" aria-selected="true" data-t="tabForm"></button>
+    <button type="button" role="tab" data-view="preview" aria-selected="false" data-t="tabPrev"></button>
+  </div>
+
+  <div class="cols">
+    <section class="pane pane-form">
+      <div class="exnote" id="exnote">
+        <p data-t="example"></p>
+        <button type="button" class="btn-link danger" data-act="clear" data-t="clear"></button>
+      </div>
+      <div id="form"></div>
+      <button type="button" class="btn primary wide see" data-act="toPreview" data-t="seePreview"></button>
+    </section>
+
+    <section class="pane pane-prev">
+      <button type="button" class="btn-link back" data-act="toForm" data-t="backForm"></button>
+      <div class="toolbar">
+        <div class="tool-l"><span data-t="rlang"></span>
+          <div class="seg" role="group" aria-label="Resume language">
+            <button type="button" data-rl="en" aria-pressed="true">English</button>
+            <button type="button" data-rl="hi" aria-pressed="false">हिंदी</button>
+          </div>
+        </div>
+        <div class="tool-l"><span data-t="colour"></span>
+          <div class="swatches" id="swatches"></div>
+        </div>
+      </div>
+      <div class="stage"><div class="wrap" id="wrap"><div class="sheet" id="sheet"></div></div></div>
+      <p class="meta" id="meta"></p>
+      <div class="actions">
+        <button type="button" class="btn primary" id="btnPdf" data-act="pdf"><span data-t="pdf"></span></button>
+        <button type="button" class="btn" data-act="copy"><span data-t="copy"></span></button>
+      </div>
+      <p class="pmsg" id="pmsg" role="status" aria-live="polite"></p>
+      <textarea class="copybox" id="copybox" readonly hidden aria-label="Resume text"></textarea>
+    </section>
+  </div>
+<p style="text-align:center;margin:28px 0 0;font-size:13px"><a href="privacy.html" style="color:var(--muted)">Privacy Policy / गोपनीयता नीति</a></p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var T = {
+    hi: {
+      brand: 'रेज़्यूमे बनाओ', tag: 'जानकारी भरो, रेज़्यूमे अपने आप बनेगा।',
+      tabForm: 'भरो', tabPrev: 'देखो', seePreview: 'रेज़्यूमे देखो →', backForm: '← बदलाव करो',
+      example: 'यह उदाहरण है। अपनी जानकारी से बदलो।', clear: 'सब खाली करो',
+      sPersonal: 'व्यक्तिगत जानकारी', name: 'पूरा नाम', jobTitle: 'पद / नौकरी का नाम', phone: 'फ़ोन', email: 'ईमेल', city: 'शहर',
+      sSummary: 'परिचय', summary: 'अपने बारे में 2-3 पंक्तियाँ',
+      sExp: 'अनुभव', role: 'पद', org: 'कंपनी', from: 'से (वर्ष)', to: 'तक (वर्ष)', desc: 'काम और उपलब्धियाँ (हर लाइन एक बिंदु)',
+      addExp: '+ अनुभव जोड़ो', remove: 'हटाओ',
+      sEdu: 'शिक्षा', deg: 'डिग्री / कक्षा', inst: 'संस्थान / बोर्ड', year: 'वर्ष', score: 'प्रतिशत / ग्रेड', addEdu: '+ शिक्षा जोड़ो',
+      sSkills: 'कौशल और भाषाएँ', skills: 'कौशल (कॉमा से अलग करो)', langs: 'भाषाएँ (कॉमा से अलग करो)',
+      rlang: 'रेज़्यूमे की भाषा', colour: 'रंग',
+      ai: 'AI से सुधारो', aiBusy: 'AI लिख रहा है…', undo: 'पहले जैसा करो', aiEmpty: 'पहले कुछ लिखो।',
+      aiDenied: 'AI की अनुमति नहीं मिली।', aiLimit: 'थोड़ी देर बाद फिर कोशिश करो।', aiFail: 'AI अभी जवाब नहीं दे पाया।',
+      pdf: 'PDF डाउनलोड', pdfBusy: 'PDF बन रहा है…', pdfSaved: 'PDF सेव हो गया।', pdfFail: 'PDF नहीं बन पाया। टेक्स्ट कॉपी करके देखो।',
+      pdfNoDl: 'इस व्यू में डाउनलोड नहीं हो सकता। टेक्स्ट कॉपी करो।',
+      copy: 'टेक्स्ट कॉपी करो', copied: 'कॉपी हो गया।', manual: 'नीचे का टेक्स्ट चुनकर कॉपी करो।',
+      pages: function (n) { return 'A4 · ' + n + ' पेज' + (n > 1 ? ' (1 पेज सबसे अच्छा रहता है)' : ''); },
+      head: { summary: 'परिचय', exp: 'अनुभव', edu: 'शिक्षा', skills: 'कौशल', langs: 'भाषाएँ' }
+    },
+    en: {
+      brand: 'Resume Banao', tag: 'Fill in your details. The resume builds itself.',
+      tabForm: 'Fill', tabPrev: 'Preview', seePreview: 'See resume →', backForm: '← Edit',
+      example: 'This is an example. Replace it with your own details.', clear: 'Clear all',
+      sPersonal: 'Personal details', name: 'Full name', jobTitle: 'Job title', phone: 'Phone', email: 'Email', city: 'City',
+      sSummary: 'Summary', summary: '2-3 lines about yourself',
+      sExp: 'Experience', role: 'Role', org: 'Company', from: 'From (year)', to: 'To (year)', desc: 'Work and results (one point per line)',
+      addExp: '+ Add experience', remove: 'Remove',
+      sEdu: 'Education', deg: 'Degree / class', inst: 'Institute / board', year: 'Year', score: 'Percentage / grade', addEdu: '+ Add education',
+      sSkills: 'Skills and languages', skills: 'Skills (comma separated)', langs: 'Languages (comma separated)',
+      rlang: 'Resume language', colour: 'Colour',
+      ai: 'Improve with AI', aiBusy: 'AI is writing…', undo: 'Undo', aiEmpty: 'Write something first.',
+      aiDenied: 'AI access was not allowed.', aiLimit: 'Try again in a moment.', aiFail: 'AI could not answer right now.',
+      pdf: 'Download PDF', pdfBusy: 'Making PDF…', pdfSaved: 'PDF saved.', pdfFail: 'Could not make the PDF. Try copying the text.',
+      pdfNoDl: 'Downloads are not available in this view. Copy the text instead.',
+      copy: 'Copy text', copied: 'Copied.', manual: 'Select the text below and copy it.',
+      pages: function (n) { return 'A4 · ' + n + ' page' + (n > 1 ? 's (one page works best)' : ''); },
+      head: { summary: 'Summary', exp: 'Experience', edu: 'Education', skills: 'Skills', langs: 'Languages' }
+    }
+  };
+
+  var ACCENTS = [
+    { c: '#2B4BD6', n: 'Blue' }, { c: '#0F766E', n: 'Teal' },
+    { c: '#B42318', n: 'Red' }, { c: '#1F2937', n: 'Charcoal' }
+  ];
+  var KEY = 'rb.v1';
+
+  function example() {
+    return {
+      ui: 'hi', rl: 'en', accent: '#2B4BD6', example: true,
+      p: { name: 'Rahul Sharma', title: 'Sales Executive', phone: '+91 98XXX XXXXX', email: 'rahul.sharma@example.com', city: 'Jaipur' },
+      summary: 'Sales executive with 4 years of experience in retail lending. Consistent in meeting monthly targets and building long-term customer relationships.',
+      exp: [{
+        role: 'Sales Executive', org: 'Example Finance Pvt. Ltd.', from: '2022', to: 'Present',
+        desc: 'Met 40+ customers every month across 3 branches\nConverted leads into loan files with complete documentation\nFollowed up on pending cases daily to reduce delays'
+      }],
+      edu: [{ deg: 'B.A.', inst: 'Example University', year: '2019', score: '' }],
+      skills: 'Customer handling, Lead follow-up, Loan documentation, MS Excel',
+      langs: 'Hindi, English'
+    };
+  }
+  function blank() {
+    return {
+      ui: state ? state.ui : 'hi', rl: state ? state.rl : 'en', accent: state ? state.accent : '#2B4BD6', example: false,
+      p: { name: '', title: '', phone: '', email: '', city: '' }, summary: '',
+      exp: [{ role: '', org: '', from: '', to: '', desc: '' }],
+      edu: [{ deg: '', inst: '', year: '', score: '' }], skills: '', langs: ''
+    };
+  }
+
+  var state = null;
+  var undoMap = {};
+  var sampleFn = null, dl = null;
+
+  function load() {
+    var base = example();
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        if (s && s.p && s.exp && s.edu) {
+          for (var k in base) { if (s[k] === undefined) s[k] = base[k]; }
+          return s;
+        }
+      }
+    } catch (e) {}
+    return base;
+  }
+  var saveTimer = null;
+  function save() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }, 250);
+  }
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function t(k) { return T[state.ui][k]; }
+  function getPath(path) { var o = state, a = path.split('.'); for (var i = 0; i < a.length; i++) { o = o[a[i]]; } return o; }
+  function setPath(path, val) {
+    var a = path.split('.'), o = state;
+    for (var i = 0; i < a.length - 1; i++) { o = o[a[i]]; }
+    o[a[a.length - 1]] = val;
+  }
+  function idFor(path) { return 'f-' + path.replace(/\./g, '-'); }
+
+  /* ---------- form ---------- */
+  function inp(path, label, val, o) {
+    o = o || {};
+    return '<label class="f"><span>' + label + '</span><input id="' + idFor(path) + '" data-k="' + path + '" type="' + (o.type || 'text') +
+      '" value="' + esc(val) + '" autocomplete="' + (o.ac || 'off') + '"></label>';
+  }
+  var SPARK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9L12 2zm7 12l.9 2.6L22.5 17.5l-2.6.9L19 21l-.9-2.6-2.6-.9 2.6-.9L19 14z"/></svg>';
+  function area(path, label, val, rows, ai) {
+    var id = idFor(path);
+    var h = '<div class="f"><label for="' + id + '"><span>' + label + '</span></label>' +
+      '<textarea id="' + id + '" data-k="' + path + '" rows="' + rows + '">' + esc(val) + '</textarea>';
+    if (ai) {
+      h += '<div class="ai-row"><button type="button" class="btn-ai" data-act="ai" data-path="' + path + '">' + SPARK + '<span>' + t('ai') + '</span></button>' +
+        '<button type="button" class="btn-link" data-act="undo" data-path="' + path + '"' + (undoMap[path] === undefined ? ' hidden' : '') + '>' + t('undo') + '</button>' +
+        '<span class="ai-msg" data-msg="' + path + '"></span></div>';
+    }
+    return h + '</div>';
+  }
+  function renderForm() {
+    var s = state, p = s.p, h = '';
+    h += '<fieldset><legend>' + t('sPersonal') + '</legend><div class="grid2">' +
+      inp('p.name', t('name'), p.name, { ac: 'name' }) + inp('p.title', t('jobTitle'), p.title) +
+      inp('p.phone', t('phone'), p.phone, { type: 'tel', ac: 'tel' }) + inp('p.email', t('email'), p.email, { type: 'email', ac: 'email' }) +
+      inp('p.city', t('city'), p.city) + '</div></fieldset>';
+    h += '<fieldset><legend>' + t('sSummary') + '</legend>' + area('summary', t('summary'), s.summary, 4, true) + '</fieldset>';
+    h += '<fieldset><legend>' + t('sExp') + '</legend>';
+    s.exp.forEach(function (e, i) {
+      var b = 'exp.' + i + '.';
+      h += '<div class="item"><div class="item-h"><button type="button" class="btn-link danger" data-act="delExp" data-i="' + i + '">' + t('remove') + '</button></div>' +
+        '<div class="grid2">' + inp(b + 'role', t('role'), e.role) + inp(b + 'org', t('org'), e.org) +
+        inp(b + 'from', t('from'), e.from) + inp(b + 'to', t('to'), e.to) + '</div>' +
+        area(b + 'desc', t('desc'), e.desc, 5, true) + '</div>';
+    });
+    h += '<button type="button" class="btn" data-act="addExp">' + t('addExp') + '</button></fieldset>';
+    h += '<fieldset><legend>' + t('sEdu') + '</legend>';
+    s.edu.forEach(function (e, i) {
+      var b = 'edu.' + i + '.';
+      h += '<div class="item"><div class="item-h"><button type="button" class="btn-link danger" data-act="delEdu" data-i="' + i + '">' + t('remove') + '</button></div>' +
+        '<div class="grid2">' + inp(b + 'deg', t('deg'), e.deg) + inp(b + 'inst', t('inst'), e.inst) +
+        inp(b + 'year', t('year'), e.year) + inp(b + 'score', t('score'), e.score) + '</div></div>';
+    });
+    h += '<button type="button" class="btn" data-act="addEdu">' + t('addEdu') + '</button></fieldset>';
+    h += '<fieldset><legend>' + t('sSkills') + '</legend><div class="grid2">' +
+      '<div class="wide2">' + inp('skills', t('skills'), s.skills) + '</div>' +
+      '<div class="wide2">' + inp('langs', t('langs'), s.langs) + '</div></div></fieldset>';
+    $('form').innerHTML = h;
+  }
+
+  /* ---------- sheet ---------- */
+  function lines(s) { return String(s || '').split(/\n+/).map(function (x) { return x.replace(/^\s*[-•*]\s*/, '').trim(); }).filter(Boolean); }
+  function list(s) { return String(s || '').split(/[,\n]+/).map(function (x) { return x.trim(); }).filter(Boolean); }
+  function renderSheet() {
+    var s = state, p = s.p, H = T[s.rl].head, h = '';
+    var contact = [p.phone, p.email, p.city].filter(Boolean).map(esc).join(' &nbsp;·&nbsp; ');
+    h += '<header>' + (p.name ? '<h2 class="s-name">' + esc(p.name) + '</h2>' : '') + (p.title ? '<p class="s-title">' + esc(p.title) + '</p>' : '') +
+      (contact ? '<p class="s-contact">' + contact + '</p>' : '') + '</header>';
+    if (s.summary.trim()) h += '<section class="s-sec"><h3>' + H.summary + '</h3><p>' + esc(s.summary.trim()) + '</p></section>';
+    var ex = s.exp.filter(function (e) { return e.role || e.org || e.desc.trim(); });
+    if (ex.length) {
+      h += '<section class="s-sec"><h3>' + H.exp + '</h3>';
+      ex.forEach(function (e) {
+        var d = [e.from, e.to].filter(Boolean).map(esc).join(' – ');
+        var ls = lines(e.desc);
+        h += '<div class="s-item"><div class="s-row"><strong>' + esc(e.role) + '</strong><span class="s-date">' + d + '</span></div>' +
+          (e.org ? '<div class="s-org">' + esc(e.org) + '</div>' : '') +
+          (ls.length ? '<ul>' + ls.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+      });
+      h += '</section>';
+    }
+    var ed = s.edu.filter(function (e) { return e.deg || e.inst; });
+    if (ed.length) {
+      h += '<section class="s-sec"><h3>' + H.edu + '</h3>';
+      ed.forEach(function (e) {
+        h += '<div class="s-item"><div class="s-row"><strong>' + esc(e.deg) + '</strong><span class="s-date">' + esc(e.year) + '</span></div>' +
+          '<div class="s-org">' + [e.inst, e.score].filter(Boolean).map(esc).join(' · ') + '</div></div>';
+      });
+      h += '</section>';
+    }
+    var sk = list(s.skills), lg = list(s.langs);
+    if (sk.length) h += '<section class="s-sec"><h3>' + H.skills + '</h3><p>' + sk.map(esc).join(' &nbsp;•&nbsp; ') + '</p></section>';
+    if (lg.length) h += '<section class="s-sec"><h3>' + H.langs + '</h3><p>' + lg.map(esc).join(' &nbsp;•&nbsp; ') + '</p></section>';
+    var sheet = $('sheet');
+    sheet.style.setProperty('--sa', s.accent);
+    sheet.innerHTML = h;
+    fit();
+  }
+  function fit() {
+    var wrap = $('wrap'), sheet = $('sheet');
+    var w = wrap.clientWidth;
+    if (!w) return;
+    var sc = Math.min(1, w / 794);
+    sheet.style.transform = 'scale(' + sc + ')';
+    wrap.style.height = Math.ceil(sheet.offsetHeight * sc) + 'px';
+    var n = Math.max(1, Math.ceil((sheet.offsetHeight - 4) / 1123));
+    $('meta').textContent = T[state.ui].pages(n);
+  }
+
+  /* ---------- static text and controls ---------- */
+  function applyStatic() {
+    document.documentElement.lang = state.ui === 'hi' ? 'hi' : 'en';
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) { el.textContent = t(el.getAttribute('data-t')); });
+    $('exnote').hidden = !state.example;
+    syncControls();
+  }
+  function syncControls() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-ui]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-ui') === state.ui)); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-rl]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-rl') === state.rl)); });
+    Array.prototype.forEach.call(document.querySelectorAll('.sw'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-accent') === state.accent)); });
+  }
+  function buildSwatches() {
+    $('swatches').innerHTML = ACCENTS.map(function (a) {
+      return '<button type="button" class="sw" data-accent="' + a.c + '" aria-label="' + a.n + '" aria-pressed="false" style="background:' + a.c + '"></button>';
+    }).join('');
+  }
+  function setView(v) {
+    var app = $('app');
+    app.setAttribute('data-view', v);
+    Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function (b) { b.setAttribute('aria-selected', String(b.getAttribute('data-view') === v)); });
+    if (v === 'preview') { fit(); }
+    window.scrollTo(0, 0);
+  }
+  function markEdited() {
+    if (state.example) { state.example = false; $('exnote').hidden = true; }
+    save();
+  }
+
+  /* ---------- AI ---------- */
+  function msgEl(path) { return document.querySelector('[data-msg="' + path + '"]'); }
+  function aiCopy(code) {
+    if (code === 'not_granted' || code === 'sampling_disabled' || code === 'not_declared') return t('aiDenied');
+    if (code === 'rate_limited') return t('aiLimit');
+    return t('aiFail');
+  }
+  async function improve(path, btn) {
+    if (!sampleFn) return;
+    var val = String(getPath(path) || '');
+    var m = msgEl(path);
+    if (!val.trim()) { if (m) m.textContent = t('aiEmpty'); return; }
+    var lang = state.rl === 'hi' ? 'Hindi (Devanagari script)' : 'English';
+    var prompt;
+    if (path === 'summary') {
+      prompt = 'You are a resume writer for job seekers in India. Rewrite the notes below as a professional resume summary of 2 to 3 sentences in ' + lang +
+        '. No first-person pronouns. Keep every fact and number exactly as given. Do not add any new facts, numbers or claims. Reply with only the summary text.\n\n' +
+        (state.p.title ? 'Job title: ' + state.p.title + '\n' : '') + 'Notes:\n' + val;
+    } else {
+      var i = Number(path.split('.')[1]), e = state.exp[i] || {};
+      prompt = 'You are a resume writer for job seekers in India. Rewrite the work notes below as 3 to 5 resume bullet points in ' + lang +
+        '. One bullet per line, no bullet symbols or numbering, each starting with a strong action verb. Keep every fact and number exactly as given. Do not add any new facts, numbers or claims. Reply with only the bullet lines.\n\n' +
+        'Role: ' + (e.role || '') + ' at ' + (e.org || '') + '\nNotes:\n' + val;
+    }
+    btn.disabled = true;
+    var label = btn.querySelector('span'), old = label.textContent;
+    label.textContent = t('aiBusy');
+    if (m) m.textContent = '';
+    try {
+      var r = await sampleFn(prompt, { modelTier: 'quick' });
+      var out = String(r.text || '').trim();
+      if (out) {
+        undoMap[path] = val;
+        setPath(path, out);
+        var ta = document.getElementById(idFor(path));
+        if (ta) ta.value = out;
+        var u = document.querySelector('[data-act="undo"][data-path="' + path + '"]');
+        if (u) u.hidden = false;
+        markEdited();
+        renderSheet();
+      }
+    } catch (err) {
+      if (m) m.textContent = aiCopy(err && err.code);
+    } finally {
+      btn.disabled = false;
+      label.textContent = old;
+    }
+  }
+
+  /* ---------- export ---------- */
+  function toText() {
+    var s = state, p = s.p, H = T[s.rl].head, o = [];
+    if (p.name) o.push(p.name);
+    if (p.title) o.push(p.title);
+    var c = [p.phone, p.email, p.city].filter(Boolean).join(' | ');
+    if (c) o.push(c);
+    if (s.summary.trim()) o.push('', H.summary.toUpperCase(), s.summary.trim());
+    var ex = s.exp.filter(function (e) { return e.role || e.org || e.desc.trim(); });
+    if (ex.length) {
+      o.push('', H.exp.toUpperCase());
+      ex.forEach(function (e) {
+        o.push([e.role, e.org].filter(Boolean).join(', ') + ([e.from, e.to].filter(Boolean).length ? ' (' + [e.from, e.to].filter(Boolean).join(' - ') + ')' : ''));
+        lines(e.desc).forEach(function (l) { o.push('- ' + l); });
+        o.push('');
+      });
+    }
+    var ed = s.edu.filter(function (e) { return e.deg || e.inst; });
+    if (ed.length) {
+      o.push(H.edu.toUpperCase());
+      ed.forEach(function (e) { o.push([e.deg, e.inst, e.score, e.year].filter(Boolean).join(', ')); });
+    }
+    var sk = list(s.skills), lg = list(s.langs);
+    if (sk.length) o.push('', H.skills.toUpperCase(), sk.join(', '));
+    if (lg.length) o.push('', H.langs.toUpperCase(), lg.join(', '));
+    return o.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  }
+  async function makePdf() {
+    if (!window.html2canvas || !window.jspdf) throw { code: 'lib' };
+    var clone = $('sheet').cloneNode(true);
+    clone.removeAttribute('id');
+    clone.style.position = 'fixed'; clone.style.left = '-10000px'; clone.style.top = '0';
+    clone.style.transform = 'none'; clone.style.width = '794px';
+    document.body.appendChild(clone);
+    var canvas;
+    try {
+      if (document.fonts && document.fonts.ready) { await document.fonts.ready; }
+      canvas = await window.html2canvas(clone, { scale: 2, backgroundColor: '#ffffff', logging: false });
+    } finally { clone.remove(); }
+    var pdf = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4', compress: true });
+    var pw = pdf.internal.pageSize.getWidth(), ph = pdf.internal.pageSize.getHeight();
+    var ih = canvas.height * pw / canvas.width;
+    var img = canvas.toDataURL('image/jpeg', 0.92);
+    var pages = Math.max(1, Math.ceil(ih / ph - 0.02));
+    for (var i = 0; i < pages; i++) {
+      if (i) pdf.addPage();
+      pdf.addImage(img, 'JPEG', 0, -i * ph, pw, ih);
+    }
+    return pdf.output('blob');
+  }
+  function fileName() {
+    var n = (state.p.name || 'Resume').trim().replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, '-');
+    return (n || 'Resume') + '-Resume.pdf';
+  }
+  async function doPdf(btn) {
+    var pm = $('pmsg');
+    btn.disabled = true;
+    var label = btn.querySelector('span'), old = label.textContent;
+    label.textContent = t('pdfBusy'); pm.textContent = '';
+    try {
+      var blob = await makePdf();
+      if (dl) { await dl.save({ filename: fileName(), data: blob }); }
+      else {
+        var url = URL.createObjectURL(blob), a = document.createElement('a');
+        a.href = url; a.download = fileName(); document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+      }
+      pm.textContent = t('pdfSaved');
+    } catch (e) {
+      pm.textContent = (e && e.code === 'declined') ? '' : t('pdfFail');
+    } finally {
+      btn.disabled = false;
+      label.textContent = old;
+    }
+  }
+  async function doCopy() {
+    var txt = toText(), pm = $('pmsg'), box = $('copybox');
+    try {
+      await navigator.clipboard.writeText(txt);
+      box.hidden = true;
+      pm.textContent = t('copied');
+    } catch (e) {
+      box.value = txt; box.hidden = false; box.focus(); box.select();
+      pm.textContent = t('manual');
+    }
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener('input', function (ev) {
+    var k = ev.target && ev.target.getAttribute && ev.target.getAttribute('data-k');
+    if (!k) return;
+    setPath(k, ev.target.value);
+    markEdited();
+    renderSheet();
+  });
+  document.addEventListener('click', function (ev) {
+    var el = ev.target.closest('[data-act],[data-ui],[data-view],[data-rl],[data-accent]');
+    if (!el) return;
+    var act = el.getAttribute('data-act');
+    if (el.hasAttribute('data-ui')) { state.ui = el.getAttribute('data-ui'); save(); applyStatic(); renderForm(); renderSheet(); return; }
+    if (el.hasAttribute('data-rl')) { state.rl = el.getAttribute('data-rl'); save(); syncControls(); renderSheet(); return; }
+    if (el.hasAttribute('data-accent')) { state.accent = el.getAttribute('data-accent'); save(); syncControls(); renderSheet(); return; }
+    if (el.hasAttribute('data-view') && !act) { setView(el.getAttribute('data-view')); return; }
+    var i = Number(el.getAttribute('data-i'));
+    if (act === 'toPreview') setView('preview');
+    else if (act === 'toForm') setView('form');
+    else if (act === 'addExp') { state.exp.push({ role: '', org: '', from: '', to: '', desc: '' }); markEdited(); renderForm(); }
+    else if (act === 'addEdu') { state.edu.push({ deg: '', inst: '', year: '', score: '' }); markEdited(); renderForm(); }
+    else if (act === 'delExp') { state.exp.splice(i, 1); undoMap = {}; markEdited(); renderForm(); renderSheet(); }
+    else if (act === 'delEdu') { state.edu.splice(i, 1); markEdited(); renderForm(); renderSheet(); }
+    else if (act === 'clear') { state = blank(); undoMap = {}; save(); applyStatic(); renderForm(); renderSheet(); }
+    else if (act === 'ai') improve(el.getAttribute('data-path'), el);
+    else if (act === 'undo') {
+      var path = el.getAttribute('data-path');
+      if (undoMap[path] !== undefined) {
+        setPath(path, undoMap[path]);
+        var ta = document.getElementById(idFor(path)); if (ta) ta.value = undoMap[path];
+        delete undoMap[path]; el.hidden = true; markEdited(); renderSheet();
+      }
+    }
+    else if (act === 'pdf') doPdf(el);
+    else if (act === 'copy') doCopy();
+  });
+
+  /* ---------- start ---------- */
+  state = load();
+  buildSwatches();
+  applyStatic();
+  renderForm();
+  renderSheet();
+  if (window.ResizeObserver) { new ResizeObserver(function () { fit(); }).observe($('wrap')); }
+  window.addEventListener('resize', fit);
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fit); }
+
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
+
+  (async function initCaps() {
+    try {
+      if (window.claude && window.claude.use) {
+        var r = await Promise.all([
+          window.claude.use('sample').catch(function () { return null; }),
+          window.claude.use('downloads').catch(function () { return null; })
+        ]);
+        sampleFn = r[0]; dl = r[1];
+      }
+    } catch (e) {}
+    $('app').classList.toggle('has-ai', !!sampleFn);
+  })();
+})();
+</script>
+
+</body>
+</html>
